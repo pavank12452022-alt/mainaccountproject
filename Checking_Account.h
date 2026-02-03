@@ -9,10 +9,12 @@ private:
     static constexpr const char *def_name = "Unnamed Checking Account";
     static constexpr double def_balance = 0.0;
     static constexpr double per_check_fee = 1.5;
+    static constexpr int def_accno=0;
 public:
-    Checking_Account(std::string name = def_name, double balance = def_balance);    
+    Checking_Account(int accno=def_accno, std::string name = def_name, double balance = def_balance);    
     virtual bool withdraw(double) override;
     virtual bool deposit(double) override;
+    virtual int get_accno() const { return accno; }
     virtual void print(std::ostream &os) const override;
     virtual ~Checking_Account() = default;
 };

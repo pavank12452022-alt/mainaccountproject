@@ -12,17 +12,18 @@ private:
     static constexpr double bonus_threshold = 5000.0;
     static constexpr int max_withdrawals = 3;
     static constexpr double max_withdraw_percent = 0.2;
+    static constexpr int def_accno=0;
 protected:
     int num_withdrawals;
 public:
-    Trust_Account(std::string name = def_name,  double balance = def_balance, double int_rate = def_int_rate);
+    Trust_Account(int accno=def_accno, std::string name = def_name,  double balance = def_balance, double int_rate = def_int_rate);
     
     // Deposits of $5000.00 or more will receive $50 bonus
     virtual bool deposit(double amount) override;
-    
     // Only allowed maximum of 3 withdrawals, each can be up to a maximum of 20% of the account's value
     virtual bool withdraw(double amount) override;
     virtual void print(std::ostream &os) const override;
+     virtual int get_accno() const { return accno; }
 
 };
 
