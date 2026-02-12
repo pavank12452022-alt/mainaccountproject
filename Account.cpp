@@ -26,4 +26,9 @@ void Account::print(std::ostream &os) const  {
     os << std::fixed;
     os << "[Account: " << name << ": " << balance << "]";
 }
-
+std::string Account::get_name() const {
+    return name;
+}
+double Account::get_balance() const {
+    return balance;
+}

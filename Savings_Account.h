@@ -15,7 +15,10 @@ public:
     virtual bool deposit(double amount) override;
     virtual bool withdraw(double amount) override;
     virtual void print(std::ostream &os) const override;
+     virtual std::string get_name() const { return name; }
+    virtual double get_balance() const  { return balance; }
     virtual int get_accno() const { return accno; }
+    virtual double get_int_rate() const { return int_rate; }
     virtual ~Savings_Account() = default;
 };
 

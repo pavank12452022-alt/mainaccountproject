@@ -1,6 +1,8 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include<fstream>
+#include<string>
 
 #include "Account.h"
 #include "Checking_Account.h"
@@ -27,6 +29,7 @@ Savings_Account* find_savings_account(
 {
     for (const auto& acc : accounts) {
         auto checking = dynamic_cast<Savings_Account*>(acc.get());
+        if (!checking)
             continue;
         if (checking->get_accno() == target_name) {
             return checking;   
@@ -79,6 +82,65 @@ int main()
 {
     vector<unique_ptr<Account>> accounts;
     bool flag = true;
+    fstream file;
+    file.open("saving.txt",ios::in);
+    if(!file)
+    {
+       cout<<"file not found"<<endl;
+       return 0;
+    }
+    else
+    { 
+        int accno;
+        string name;
+        double bal;
+        double int_rate;
+
+        while(file >> accno >> name >> bal >> int_rate)
+        {
+            accounts.push_back(make_unique<Savings_Account>(accno, name, bal, int_rate));
+        }
+    }
+    fstream file2;
+    file2.open("checking.txt",ios::in);
+    if(!file2)
+    {
+       cout<<"file not found"<<endl;
+       return 0;
+    }
+    else
+    { 
+        int accno;
+        string name;
+        double bal;
+
+        while(file2 >> accno >> name >> bal)
+        {
+            accounts.push_back(make_unique<Checking_Account>(accno, name, bal));
+        }
+    }
+    fstream file3;
+    file3.open("trust.txt",ios::in);
+    if(!file3)
+    {
+       cout<<"file not found"<<endl;
+       return 0;
+    }
+    else
+    { 
+        int accno;
+        string name;
+        double bal;
+        double int_rate;
+
+        while(file3 >> accno >> name >> bal>>int_rate)
+        {
+            accounts.push_back(make_unique<Trust_Account>(accno, name, bal,int_rate));
+        }
+    }
+    file.close();   
+    file2.close();    
+    file3.close();   
 
     while (flag)
     {   
@@ -117,6 +179,17 @@ int main()
                             cout << "Enter initial balance: ";
                             cin >> balance;
                             accounts.push_back(make_unique<Checking_Account>(accno, name, balance));
+                            ofstream out("checking.txt",ios::app);
+                            if(!out)
+                            {
+                                cout<<"File not created"<<endl;
+                                return 0;
+                            }
+                            else
+                            {
+                                out<<accno<<" "<<name<<" "<<balance<<endl;
+                            }
+                            out.close();
                             break;
                         }
                         case 2:
@@ -130,6 +203,21 @@ int main()
                             if (find_checking_account(accounts, accno))
                             {
                                 find_checking_account(accounts, accno)->deposit(amount);
+                                fstream file; 
+                                file.open("checking.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    {
+                                     auto checking = dynamic_cast<Checking_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { 
+                                        file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<endl;
+                                    } 
+                                   } 
+                                   } 
+                                   file.close(); 
+                
                             }
                             else
                             {
@@ -148,6 +236,18 @@ int main()
                             if (find_checking_account(accounts, accno))
                             {
                                 find_checking_account(accounts, accno)->withdraw(amount);
+                                fstream file; 
+                                file.open("checking.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    { auto checking = dynamic_cast<Checking_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<endl; } 
+                                   } 
+                                   } 
+                                   file.close(); 
+                
                             }
                             else
                             {
@@ -214,8 +314,19 @@ int main()
                             cout << "Enter interest rate: ";
                             cin >> int_rate;
                             accounts.push_back(make_unique<Savings_Account>(accno, name, balance, int_rate));
+                             ofstream out("saving.txt",ios::app);
+                            if(!out)
+                            {
+                                cout<<"File not created"<<endl;
+                                return 0;
+                            }
+                            else
+                            {
+                                out<<accno<<" "<<name<<" "<<balance<<" "<<int_rate<<endl;
+                            }
+                            out.close();
                             break;
-                        }
+                        } 
                         case 2:
                         {
                             double amount;
@@ -227,6 +338,17 @@ int main()
                             if (find_savings_account(accounts, accno))
                             {
                                 find_savings_account(accounts, accno)->deposit(amount);
+                                fstream file; 
+                                file.open("saving.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    { auto checking = dynamic_cast<Savings_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<" "<<checking->get_int_rate()<<endl; } 
+                                   } 
+                                   } 
+                                   file.close(); 
                             }
                             else
                             {
@@ -245,6 +367,17 @@ int main()
                             if (find_savings_account(accounts, accno))
                             {
                                 find_savings_account(accounts, accno)->withdraw(amount);
+                                 fstream file; 
+                                file.open("saving.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    { auto checking = dynamic_cast<Savings_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<" "<<checking->get_int_rate()<<endl; } 
+                                   } 
+                                   } 
+                                   file.close();
                             }
                             else
                             {
@@ -311,6 +444,17 @@ int main()
                             cout << "Enter interest rate: ";
                             cin >> int_rate;
                             accounts.push_back(make_unique<Trust_Account>(accno, name, balance, int_rate));
+                              ofstream out("trust.txt",ios::app);
+                            if(!out)
+                            {
+                                cout<<"File not created"<<endl;
+                                return 0;
+                            }
+                            else
+                            {
+                                out<<accno<<" "<<name<<" "<<balance<<" "<<int_rate<<endl;
+                            }
+                            out.close();
                             break;
                         }
                         case 2:
@@ -324,6 +468,17 @@ int main()
                             if (find_trust_account(accounts, accno))
                             {
                                 find_trust_account(accounts, accno)->deposit(amount);
+                                 fstream file; 
+                                file.open("trust.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    { auto checking = dynamic_cast<Trust_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<" "<<checking->get_int_rate()<<endl; } 
+                                   } 
+                                   } 
+                                   file.close();
                             }
                             else
                             {
@@ -342,6 +497,17 @@ int main()
                             if (find_trust_account(accounts, accno))
                             {
                                 find_trust_account(accounts, accno)->withdraw(amount);
+                                 fstream file; 
+                                file.open("trust.txt",ios::trunc); 
+                                if(!file) { cout<<"file not found"<<endl; return 0; } 
+                                else { 
+                                    for(const auto &acc:accounts) 
+                                    { auto checking = dynamic_cast<Trust_Account*>(acc.get()); 
+                                    if(checking) 
+                                    { file<<checking->get_accno()<<" "<<checking->get_name()<<" "<<checking->get_balance()<<" "<<checking->get_int_rate()<<endl; } 
+                                   } 
+                                   } 
+                                   file.close();
                             }
                             else
                             {

@@ -23,7 +23,10 @@ public:
     // Only allowed maximum of 3 withdrawals, each can be up to a maximum of 20% of the account's value
     virtual bool withdraw(double amount) override;
     virtual void print(std::ostream &os) const override;
-     virtual int get_accno() const { return accno; }
+     virtual std::string get_name() const { return name; }
+    virtual double get_balance() const  { return balance; }
+    virtual int get_accno() const { return accno; }
+
 
 };
 
