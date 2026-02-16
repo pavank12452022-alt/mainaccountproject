@@ -1,4 +1,5 @@
-Account Management System | C++
+# Account Management System | C++
+
 Developed a C++ based Account Management System supporting Savings,
 Checking, and Trust accounts using abstraction and runtime polymorphism
 via an abstract Account class and I_Printable interface. 
